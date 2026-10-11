@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Salud María Auxiliadora - Reservas</title>
+<style>
+:root{
+  --rojo:#b71c1c; --rojo2:#d32f2f; --rojo-claro:#ffebee;
+  --texto:#263238; --gris:#f5f6f8; --blanco:#fff; --verde:#2e7d32;
+  --borde:#e0e0e0; --sombra:0 8px 24px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--gris);color:var(--texto)}
+header{background:linear-gradient(135deg,var(--rojo),#8e0000);color:white;padding:22px 5%;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-icon{width:48px;height:48px;border-radius:12px;background:white;color:var(--rojo);display:grid;place-items:center;font-size:28px;font-weight:bold}
+.logo h1{font-size:20px;margin:0}.logo p{margin:4px 0 0;font-size:13px;opacity:.9}
+header button{border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:#fff;border-radius:9px;padding:10px 15px;cursor:pointer}
+.container{max-width:1100px;margin:0 auto;padding:28px 18px 50px}
+.hero{background:white;border-radius:18px;padding:30px;box-shadow:var(--sombra);display:grid;grid-template-columns:1.5fr 1fr;gap:25px;align-items:center}
+.hero h2{font-size:32px;margin:0 0 12px;color:var(--rojo)}
+.hero p{line-height:1.6;color:#546e7a}
+.primary{background:var(--rojo2);color:white;border:0;border-radius:10px;padding:13px 20px;font-size:16px;font-weight:bold;cursor:pointer}
+.primary:hover{background:var(--rojo)}
+.hero-card{background:var(--rojo-claro);border-radius:16px;padding:22px}
+.hero-card strong{display:block;font-size:18px;color:var(--rojo);margin-bottom:12px}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+.info{background:#fff;border-radius:14px;padding:18px;box-shadow:var(--sombra)}
+.info b{display:block;color:var(--rojo);font-size:14px;margin-bottom:6px}
+.panel{background:#fff;border-radius:18px;padding:26px;box-shadow:var(--sombra);margin-top:22px}
+.panel h2{margin-top:0;color:var(--rojo)}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+label{font-weight:bold;font-size:14px;display:block;margin-bottom:7px}
+input,select{width:100%;padding:12px;border:1px solid #cfd8dc;border-radius:9px;font-size:15px;background:white}
+input:focus,select:focus{outline:2px solid #ffcdd2;border-color:var(--rojo2)}
+.full{grid-column:1/-1}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+.secondary{background:#eceff1;color:#37474f;border:0;border-radius:9px;padding:12px 18px;cursor:pointer}
+.message{display:none;margin-top:16px;padding:12px;border-radius:9px;font-weight:bold}
+.error{background:#ffebee;color:#b71c1c}.success{background:#e8f5e9;color:#2e7d32}
+.availability{margin-top:8px;font-size:13px;font-weight:bold}
+.available{color:var(--verde)}.busy{color:var(--rojo)}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:8px}
+.slot{padding:10px;border:1px solid #cfd8dc;border-radius:8px;background:#fff;cursor:pointer;text-align:center}
+.slot:hover{border-color:var(--rojo2);background:var(--rojo-claro)}
+.slot.busy{background:#eeeeee;color:#9e9e9e;border-color:#ddd;cursor:not-allowed;text-decoration:line-through}
+.slot.selected{background:var(--rojo);color:#fff;border-color:var(--rojo)}
+.summary{background:#fafafa;border:1px solid var(--borde);border-radius:12px;padding:18px;line-height:1.8}
+.hidden{display:none!important}
+.print-card{max-width:720px;margin:auto;border:2px solid var(--rojo);border-radius:14px;padding:28px;background:white}
+.print-head{text-align:center;border-bottom:2px solid var(--rojo);padding-bottom:15px;margin-bottom:18px}
+.print-head h2{margin:0;color:var(--rojo)}.print-head p{margin:5px 0}
+.ticket-number{text-align:center;font-size:42px;font-weight:bold;color:var(--rojo);margin:15px 0}
+.ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ticket-item{border-bottom:1px solid #ddd;padding:8px 0}.ticket-item b{display:block;color:#607d8b;font-size:12px;text-transform:uppercase}
+.note{font-size:12px;color:#607d8b;margin-top:18px;text-align:center}
+footer{text-align:center;color:#78909c;font-size:13px;padding:25px}
+@media(max-width:760px){
+  header{align-items:flex-start}.hero{grid-template-columns:1fr;padding:22px}.hero h2{font-size:26px}
+  .info-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}
+  .slots{grid-template-columns:repeat(3,1fr)}.ticket-grid{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}.no-print{display:none!important}
+  .container{padding:0}.panel{box-shadow:none;margin:0;padding:0}
+  .print-card{border:2px solid #000;margin-top:0}
+}
+</style>
+</head>
+<body>
+<header class="no-print">
+  <div class="logo">
+    <div class="logo-icon">+</div>
+    <div>
+      <h1>Centro de Salud María Auxiliadora</h1>
+      <p>Sistema web de asignación de fichas de atención médica</p>
+    </div>
+  </div>
+  <button onclick="mostrarInicio()">Inicio</button>
+</header>
+
+<main class="container">
+  <section id="inicio">
+    <div class="hero">
+      <div>
+        <h2>Reserva tu ficha de atención médica</h2>
+        <p>Realiza tu reserva de manera sencilla, selecciona el médico, la fecha y un horario disponible. El sistema controla automáticamente que no existan dos reservas para el mismo médico, fecha y hora.</p>
+        <button class="primary" onclick="mostrarReserva()">Realizar reserva</button>
+      </div>
+      <div class="hero-card">
+        <strong>¿Cómo funciona?</strong>
+        <div>1. Ingresa tus datos.</div>
+        <div>2. Selecciona médico y fecha.</div>
+        <div>3. Elige un horario disponible.</div>
+        <div>4. Confirma la reserva.</div>
+        <div>5. Imprime tu ficha.</div>
+      </div>
+    </div>
+    <div class="info-grid">
+      <div class="info"><b>Atención organizada</b>Consulta los horarios disponibles de cada médico.</div>
+      <div class="info"><b>Reserva segura</b>Una hora ocupada no puede reservarse nuevamente.</div>
+      <div class="info"><b>Ficha imprimible</b>Obtén un comprobante con todos los datos de tu reserva.</div>
+    </div>
+  </section>
+
+  <section id="reservaPanel" class="panel hidden">
+    <h2>Realizar reserva</h2>
+    <p>Completa los datos del paciente y selecciona un horario disponible.</p>
+
+    <div class="form-grid">
+      <div>
+        <label for="ci">Cédula de identidad *</label>
+        <input id="ci" placeholder="Ej. 7354210" inputmode="numeric" maxlength="10"
+       pattern="[0-9]{5,10}" oninput="this.value=this.value.replace(/\D/g,'')">
+        <small style="color:#607d8b">Solo números.</small>
+      </div>
+      <div>
+        <label for="nombre">Nombre completo *</label>
+        <input id="nombre" placeholder="Ej. Juan Pérez" maxlength="80"
+       autocomplete="name" oninput="validarNombre(this)">
+        <small style="color:#607d8b">Solo letras y espacios.</small>
+      </div>
+      <div>
+        <label for="telefono">Teléfono *</label>
+        <input id="telefono" placeholder="Ej. 72400000" inputmode="numeric" maxlength="8"
+       pattern="[67][0-9]{7}" oninput="this.value=this.value.replace(/\D/g,'')">
+        <small style="color:#607d8b">8 dígitos. Debe comenzar con 6 o 7.</small>
+      </div>
+      <div>
+        <label for="servicio">Servicio / especialidad *</label>
+        <select id="servicio" onchange="cargarMedicos()">
+          <option value="">Seleccione un servicio</option>
+          <option>Medicina General</option>
+          <option>Pediatría</option>
+          <option>Odontología</option>
+        </select>
+      </div>
+      <div>
+        <label for="medico">Médico *</label>
+        <select id="medico" onchange="actualizarHorarios()">
+          <option value="">Seleccione primero el servicio</option>
+        </select>
+      </div>
+      <div>
+        <label for="fecha">Fecha *</label>
+        <input type="date" id="fecha" onchange="actualizarHorarios()">
+      </div>
+      <div class="full">
+        <label>Horario disponible *</label>
+        <div id="slots" class="slots"></div>
+        <div id="availability" class="availability"></div>
+      </div>
+    </div>
+
+    <div id="formMessage" class="message"></div>
+    <div class="actions">
+      <button class="secondary" onclick="mostrarInicio()">Cancelar</button>
+      <button class="primary" onclick="confirmarReserva()">Confirmar reserva</button>
+    </div>
+  </section>
+
+  <section id="ticketPanel" class="panel hidden">
+    <div class="no-print">
+      <h2>Reserva realizada correctamente</h2>
+      <p>Tu ficha ha sido generada. Puedes imprimirla o volver al inicio.</p>
+    </div>
+    <div id="ticket" class="print-card"></div>
+    <div class="actions no-print">
+      <button class="secondary" onclick="mostrarInicio()">Volver al inicio</button>
+      <button class="primary" onclick="window.print()">🖨 Imprimir ficha</button>
+    </div>
+  </section>
+</main>
+
+<footer class="no-print">Centro de Salud María Auxiliadora de Oruro · Prototipo académico</footer>
+
+<script>
+const medicos = [
+  {id:1,nombre:"Dr. Carlos Pérez",servicio:"Medicina General",inicio:"08:00",fin:"12:00"},
+  {id:2,nombre:"Dra. Ana López",servicio:"Pediatría",inicio:"14:00",fin:"18:00"},
+  {id:3,nombre:"Dr. Luis Quispe",servicio:"Odontología",inicio:"08:00",fin:"12:00"}
+];
+
+let seleccionHora = "";
+const horarios = ["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30"];
+
+function getReservas(){
+  return JSON.parse(localStorage.getItem("reservasMariaAuxiliadora") || "[]");
+}
+function guardarReservas(r){
+  localStorage.setItem("reservasMariaAuxiliadora", JSON.stringify(r));
+}
+function mostrarInicio(){
+  document.getElementById("inicio").classList.remove("hidden");
+  document.getElementById("reservaPanel").classList.add("hidden");
+  document.getElementById("ticketPanel").classList.add("hidden");
+}
+function mostrarReserva(){
+  document.getElementById("inicio").classList.add("hidden");
+  document.getElementById("ticketPanel").classList.add("hidden");
+  document.getElementById("reservaPanel").classList.remove("hidden");
+  limpiarFormulario();
+  const hoy = new Date(); hoy.setMinutes(hoy.getMinutes()-hoy.getTimezoneOffset());
+  document.getElementById("fecha").min = hoy.toISOString().slice(0,10);
+}
+function cargarMedicos(){
+  const servicio=document.getElementById("servicio").value;
+  const select=document.getElementById("medico");
+  select.innerHTML='<option value="">Seleccione un médico</option>';
+  medicos.filter(m=>m.servicio===servicio).forEach(m=>{
+    select.innerHTML += `<option value="${m.id}">${m.nombre}</option>`;
+  });
+  actualizarHorarios();
+}
+function dentroHorario(h,m){
+  return h>=m.inicio && h<m.fin;
+}
+function actualizarHorarios(){
+  seleccionHora="";
+  const medico=medicos.find(m=>m.id==document.getElementById("medico").value);
+  const fecha=document.getElementById("fecha").value;
+  const slots=document.getElementById("slots");
+  const av=document.getElementById("availability");
+  slots.innerHTML="";
+  av.textContent="";
+  if(!medico || !fecha) return;
+  const reservas=getReservas();
+  const delDia=reservas.filter(r=>r.idMedico==medico.id && r.fecha===fecha && r.estado==="Reservada");
+  let disponibles=0;
+  horarios.forEach(h=>{
+    if(!dentroHorario(h,medico)) return;
+    const ocupado=delDia.some(r=>r.hora===h);
+    const b=document.createElement("button");
+    b.type="button"; b.className="slot"+(ocupado?" busy":"");
+    b.textContent=h+(ocupado?" · Ocupado":"");
+    if(!ocupado){
+      disponibles++;
+      b.onclick=()=>seleccionarHora(h,b);
+    }else b.disabled=true;
+    slots.appendChild(b);
+  });
+  av.className="availability "+(disponibles?"available":"busy");
+  av.textContent=disponibles ? `${disponibles} horario(s) disponible(s).` : "No hay horarios disponibles para esta fecha.";
+}
+function seleccionarHora(h,btn){
+  seleccionHora=h;
+  document.querySelectorAll(".slot").forEach(x=>x.classList.remove("selected"));
+  btn.classList.add("selected");
+}
+function mensaje(texto,tipo="error"){
+  const el=document.getElementById("formMessage");
+  el.textContent=texto; el.className="message "+tipo; el.style.display="block";
+}
+
+function validarNombre(input){
+  // Solo letras, espacios, apóstrofes y guiones. También permite tildes y Ñ.
+  input.value = input.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s'-]/g, "");
+}
+
+function validarCI(ci){
+  // Para el prototipo: solamente números, entre 5 y 10 dígitos.
+  return /^[0-9]{5,10}$/.test(ci);
+}
+
+function validarTelefonoBolivia(telefono){
+  // Números móviles bolivianos: 8 dígitos y comienzan con 6 o 7.
+  // Se aceptan únicamente números, sin +591 ni espacios.
+  return /^[67][0-9]{7}$/.test(telefono);
+}
+
+function confirmarReserva(){
+  const ci=document.getElementById("ci").value.trim();
+  const nombre=document.getElementById("nombre").value.trim();
+  const telefono=document.getElementById("telefono").value.trim();
+  const servicio=document.getElementById("servicio").value;
+  const idMedico=document.getElementById("medico").value;
+  const fecha=document.getElementById("fecha").value;
+  if(!ci||!nombre||!telefono||!servicio||!idMedico||!fecha||!seleccionHora){
+    mensaje("Complete todos los campos y seleccione un horario disponible.");
+    return;
+  }
+
+  if(!validarCI(ci)){
+    mensaje("La C.I. debe contener únicamente números y tener entre 5 y 10 dígitos.");
+    document.getElementById("ci").focus();
+    return;
+  }
+
+  if(!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s'-]{2,80}$/.test(nombre)){
+    mensaje("El nombre solo puede contener letras, espacios, apóstrofes o guiones.");
+    document.getElementById("nombre").focus();
+    return;
+  }
+
+  if(!validarTelefonoBolivia(telefono)){
+    mensaje("El teléfono debe tener 8 dígitos y comenzar con 6 o 7. Ejemplo: 72400000.");
+    document.getElementById("telefono").focus();
+    return;
+  }
+
+  const reservas=getReservas();
+  const repetida=reservas.some(r=>r.idMedico==idMedico && r.fecha===fecha && r.hora===seleccionHora && r.estado==="Reservada");
+  if(repetida){
+    mensaje("El horario seleccionado acaba de ser ocupado. Seleccione otro horario.");
+    actualizarHorarios(); return;
+  }
+  const medico=medicos.find(m=>m.id==idMedico);
+  const numero=String(reservas.length+1).padStart(3,"0");
+  const reserva={
+    id:Date.now(), numero, ci, nombre, telefono, servicio,
+    idMedico:Number(idMedico), medico:medico.nombre, fecha, hora:seleccionHora,
+    estado:"Reservada", creado:new Date().toISOString()
+  };
+  reservas.push(reserva);
+  guardarReservas(reservas);
+
+  // Generar la ficha antes de limpiar el formulario.
+  generarTicket(reserva);
+
+  // Limpiar completamente el formulario para una nueva reserva.
+  limpiarFormulario();
+
+  document.getElementById("reservaPanel").classList.add("hidden");
+  document.getElementById("ticketPanel").classList.remove("hidden");
+}
+
+function limpiarFormulario(){
+  document.getElementById("ci").value="";
+  document.getElementById("nombre").value="";
+  document.getElementById("telefono").value="";
+  document.getElementById("servicio").value="";
+  document.getElementById("medico").innerHTML='<option value="">Seleccione primero el servicio</option>';
+  document.getElementById("fecha").value="";
+  document.getElementById("slots").innerHTML="";
+  document.getElementById("availability").textContent="";
+  document.getElementById("availability").className="availability";
+  document.getElementById("formMessage").style.display="none";
+  seleccionHora="";
+}
+
+function formatoFecha(f){
+  const [y,m,d]=f.split("-");
+  return `${d}/${m}/${y}`;
+}
+function generarTicket(r){
+  document.getElementById("ticket").innerHTML=`
+    <div class="print-head">
+      <h2>CENTRO DE SALUD MARÍA AUXILIADORA</h2>
+      <p>Ficha de reserva de atención médica</p>
+      <p>Oruro - Bolivia</p>
+    </div>
+    <div class="ticket-number">N.º ${r.numero}</div>
+    <div class="ticket-grid">
+      <div class="ticket-item"><b>Paciente</b>${escapeHtml(r.nombre)}</div>
+      <div class="ticket-item"><b>C.I.</b>${escapeHtml(r.ci)}</div>
+      <div class="ticket-item"><b>Teléfono</b>${escapeHtml(r.telefono)}</div>
+      <div class="ticket-item"><b>Servicio</b>${escapeHtml(r.servicio)}</div>
+      <div class="ticket-item"><b>Médico</b>${escapeHtml(r.medico)}</div>
+      <div class="ticket-item"><b>Fecha</b>${formatoFecha(r.fecha)}</div>
+      <div class="ticket-item"><b>Hora</b>${r.hora}</div>
+      <div class="ticket-item"><b>Estado</b>${r.estado}</div>
+    </div>
+    <p class="note">Presente esta ficha al momento de acudir a su atención médica. Este prototipo guarda las reservas localmente en el navegador.</p>
+  `;
+}
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+</script>
+</body>
+</html>
